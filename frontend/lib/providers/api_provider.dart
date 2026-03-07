@@ -266,4 +266,102 @@ class ApiProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  // Network Monitoring - Get Active Connections
+  Future<Map<String, dynamic>> getActiveConnections() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/monitoring/connections'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get active connections');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Network Monitoring - Get Network Interfaces
+  Future<Map<String, dynamic>> getNetworkInterfaces() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/monitoring/interfaces'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get network interfaces');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Network Monitoring - Get Network Statistics
+  Future<Map<String, dynamic>> getNetworkStatistics() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/monitoring/statistics'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get network statistics');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Network Monitoring - Get ARP Table
+  Future<Map<String, dynamic>> getArpTable() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/monitoring/arp'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get ARP table');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Network Monitoring - Detect New Devices
+  Future<Map<String, dynamic>> detectNewDevices({List<String>? knownMacs}) async {
+    try {
+      Uri uri = Uri.parse('$_baseUrl/monitoring/detect-devices');
+      
+      if (knownMacs != null && knownMacs.isNotEmpty) {
+        uri = uri.replace(
+          queryParameters: {'known_macs': knownMacs.join(',')},
+        );
+      }
+      
+      final response = await http.post(uri);
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to detect new devices');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Network Monitoring - Get Listening Ports
+  Future<Map<String, dynamic>> getListeningPorts() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/monitoring/listening-ports'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get listening ports');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -5,6 +5,7 @@ import 'network_scan_screen.dart';
 import 'malware_analysis_screen.dart';
 import 'bruteforce_screen.dart';
 import 'reports_screen.dart';
+import 'network_monitoring_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const MalwareAnalysisScreen(),
     const BruteforceScreen(),
     const ReportsScreen(),
+    const NetworkMonitoringScreen(),
   ];
 
   @override
@@ -29,11 +31,24 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [Color(0xFF00D4FF), Color(0xFF0066FF)],
-              ).createShader(bounds),
-              child: const Icon(Icons.security, color: Colors.white, size: 32),
+            // Logo Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/logo.jpg',
+                height: 40,
+                width: 40,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback to icon if image not found
+                  return ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [Color(0xFF00D4FF), Color(0xFF0066FF)],
+                    ).createShader(bounds),
+                    child: const Icon(Icons.security, color: Colors.white, size: 32),
+                  );
+                },
+              ),
             ),
             const SizedBox(width: 12),
             ShaderMask(
@@ -179,6 +194,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const NavigationRailDestination(
                   icon: Icon(Icons.description),
                   label: Text('Reports'),
+                ),
+                const NavigationRailDestination(
+                  icon: Icon(Icons.show_chart),
+                  label: Text('Monitoring'),
                 ),
               ],
             ),
