@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:typed_data';
 
 class ApiProvider extends ChangeNotifier {
   String _baseUrl = 'http://localhost:8000';
@@ -32,22 +33,30 @@ class ApiProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Network Scan
+  // Network Scan - Updated for modular backend
   Future<Map<String, dynamic>> networkScan({
     required String ip,
     String scanType = '-sV',
     String? ports,
+    bool aggressive = false,
+    bool osDetection = false,
+    bool scriptScan = false,
+    bool traceroute = false,
   }) async {
     try {
-      Uri uri = Uri.parse('$_baseUrl/scan').replace(
-        queryParameters: {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/scan/scan'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
           'ip': ip,
           'scan_type': scanType,
           if (ports != null) 'ports': ports,
-        },
+          'aggressive': aggressive,
+          'os_detection': osDetection,
+          'script_scan': scriptScan,
+          'traceroute': traceroute,
+        }),
       );
-
-      final response = await http.get(uri);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -59,20 +68,45 @@ class ApiProvider extends ChangeNotifier {
     }
   }
 
-  // Malware Analysis
+  // Vulnerability Scan
+  Future<Map<String, dynamic>> vulnerabilityScan({
+    required String ip,
+    String? ports,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/scan/vulnerabilities'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'ip': ip,
+          if (ports != null) 'ports': ports,
+        }),
+      );
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Vulnerability scan failed: ${response.body}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Malware Analysis - Updated for modular backend
   Future<Map<String, dynamic>> analyzeMalware({
     required String filePath,
     String analysisType = 'static',
   }) async {
     try {
-      Uri uri = Uri.parse('$_baseUrl/analyze/malware').replace(
-        queryParameters: {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/analyze/malware'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
           'file_path': filePath,
           'analysis_type': analysisType,
-        },
+        }),
       );
-
-      final response = await http.post(uri);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -84,7 +118,7 @@ class ApiProvider extends ChangeNotifier {
     }
   }
 
-  // Bruteforce Attack
+  // Bruteforce Attack - Updated for modular backend
   Future<Map<String, dynamic>> bruteforce({
     required String service,
     required String targetIp,
@@ -93,17 +127,17 @@ class ApiProvider extends ChangeNotifier {
     int? port,
   }) async {
     try {
-      Uri uri = Uri.parse('$_baseUrl/bruteforce').replace(
-        queryParameters: {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/bruteforce/'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
           'service': service,
           'target_ip': targetIp,
           'username_list': usernameList,
           'password_list': passwordList,
-          if (port != null) 'port': port.toString(),
-        },
+          if (port != null) 'port': port,
+        }),
       );
-
-      final response = await http.post(uri);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -115,16 +149,34 @@ class ApiProvider extends ChangeNotifier {
     }
   }
 
-  // Get Report
+  // Get Report - Updated endpoint
   Future<Map<String, dynamic>> getReport(String reportId) async {
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/report/$reportId'));
+      final response = await http.get(Uri.parse('$_baseUrl/reports/$reportId'));
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
         throw Exception('Report not found');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Export Report (PDF or JSON)
+  Future<Uint8List> exportReport(String reportId, String format) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/reports/export/$reportId?format=$format'),
+      );
+      
+      if (response.statusCode != 200) {
+        throw Exception('Failed to export report');
+      }
+      
+      // Return the file bytes (caller will save it)
+      return response.bodyBytes;
     } catch (e) {
       rethrow;
     }
@@ -163,15 +215,52 @@ class ApiProvider extends ChangeNotifier {
     }
   }
 
-  // Check Backend Status
+  // Check Backend Status - Updated endpoint
   Future<Map<String, dynamic>> getStatus() async {
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/status'));
+      final response = await http.get(Uri.parse('$_baseUrl/tools/status'));
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
         throw Exception('Failed to get status');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Get Tools Installation Instructions
+  Future<Map<String, dynamic>> getInstallInstructions(String toolName) async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/tools/install/$toolName'));
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to get installation instructions');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Execute Terminal Command (REST API)
+  Future<Map<String, dynamic>> executeTerminalCommand(String command, {int timeout = 60}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/terminal/execute').replace(
+          queryParameters: {
+            'command': command,
+            'timeout': timeout.toString(),
+          },
+        ),
+      );
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Command execution failed: ${response.body}');
       }
     } catch (e) {
       rethrow;

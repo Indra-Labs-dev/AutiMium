@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/api_provider.dart';
 import 'providers/report_provider.dart';
+import 'providers/terminal_provider.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class AutoMiumApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ApiProvider()),
         ChangeNotifierProvider(create: (_) => ReportProvider()),
+        ChangeNotifierProvider(create: (_) => TerminalProvider()),
       ],
       child: MaterialApp(
         title: 'AutoMium',
