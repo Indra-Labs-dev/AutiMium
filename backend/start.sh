@@ -29,4 +29,9 @@ mkdir -p data
 
 # Start the server
 echo "🔌 Starting FastAPI server on http://0.0.0.0:8000"
-python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+echo ""
+echo "📚 API Documentation:"
+echo "   • Swagger UI:  http://localhost:8000/docs"
+echo "   • ReDoc:       http://localhost:8000/redoc"
+echo ""
+python -m uvicorn app.__main__:app --host 0.0.0.0 --port 8000 --reload
