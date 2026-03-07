@@ -25,7 +25,6 @@ dependencies:
   # UI Components
   google_fonts: ^6.1.0
   font_awesome_flutter: ^10.6.0
-  flutter_terminal: ^0.3.0
   
   # Utilities
   file_picker: ^6.1.1
