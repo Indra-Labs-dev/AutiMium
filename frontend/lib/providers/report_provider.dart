@@ -10,7 +10,12 @@ class ReportProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   ReportProvider() {
-    initHive();
+    // Don't call async methods in constructor
+    // initHive() will be called manually after provider creation
+  }
+
+  Future<void> initialize() async {
+    await initHive();
   }
 
   Future<void> initHive() async {
@@ -23,6 +28,18 @@ class ReportProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+    await _loadReportsData();
+    
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> loadReportsSilent() async {
+    // Load reports without notifying listeners (for use during build)
+    await _loadReportsData();
+  }
+
+  Future<void> _loadReportsData() async {
     try {
       final keys = _reportsBox.keys.toList();
       _reports = keys.map((key) {
@@ -39,9 +56,6 @@ class ReportProvider extends ChangeNotifier {
     } catch (e) {
       print('Error loading reports: $e');
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> addReport(Map<String, dynamic> report) async {

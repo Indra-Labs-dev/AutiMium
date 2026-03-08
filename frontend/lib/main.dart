@@ -17,7 +17,16 @@ class AutoMiumApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ApiProvider()),
-        ChangeNotifierProvider(create: (_) => ReportProvider()),
+        ChangeNotifierProvider(
+          create: (context) {
+            final provider = ReportProvider();
+            // Initialize Hive after widget is built
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              provider.initialize();
+            });
+            return provider;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => TerminalProvider()),
       ],
       child: MaterialApp(

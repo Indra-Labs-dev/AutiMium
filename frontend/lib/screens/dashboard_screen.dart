@@ -29,11 +29,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     try {
-      final apiProvider = Provider.of<ApiProvider>(context, listen: false);
       final reportProvider = Provider.of<ReportProvider>(context, listen: false);
-
-      // Load reports from local storage
-      await reportProvider.loadReports();
+      
+      // Load reports from local storage (don't notify listeners during build)
+      await reportProvider.loadReportsSilent();
       
       final reports = reportProvider.reports;
       
@@ -44,9 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      print('Error loading dashboard stats: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load dashboard stats: $e')),
