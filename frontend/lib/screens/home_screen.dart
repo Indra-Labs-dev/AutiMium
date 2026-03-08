@@ -6,6 +6,8 @@ import 'malware_analysis_screen.dart';
 import 'bruteforce_screen.dart';
 import 'reports_screen.dart';
 import 'network_monitoring_screen.dart';
+import 'dashboard_screen.dart';
+import 'kali_tools_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
+    const DashboardScreen(),      // Dashboard en premier!
+    const KaliToolsScreen(),      // Kali Tools Hub ⭐
     const NetworkScanScreen(),
     const MalwareAnalysisScreen(),
     const BruteforceScreen(),
@@ -179,6 +183,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               destinations: [
+                const NavigationRailDestination(
+                  icon: Icon(Icons.dashboard),
+                  label: Text('Dashboard'),
+                ),
+                const NavigationRailDestination(
+                  icon: Icon(Icons.security),
+                  label: Text('Kali Tools'),
+                ),
                 const NavigationRailDestination(
                   icon: Icon(Icons.wifi_tethering),
                   label: Text('Network Scan'),
