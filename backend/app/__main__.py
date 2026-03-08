@@ -6,7 +6,7 @@ Modular architecture for cybersecurity tools orchestration
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import network, malware, bruteforce, reports, tools, websocket_routes, monitoring, auth
+from app.routes import network, malware, bruteforce, reports, tools, websocket_routes, monitoring, auth, kali_tools
 from app.models.database import init_database
 from app.websocket.terminal import ConnectionManager
 
@@ -33,6 +33,7 @@ app.include_router(malware.router, prefix="/analyze", tags=["Malware Analysis"])
 app.include_router(bruteforce.router, prefix="/bruteforce", tags=["Bruteforce"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 app.include_router(tools.router, prefix="/tools", tags=["Tools"])
+app.include_router(kali_tools.router, prefix="/kali", tags=["Kali Linux Tools"])
 app.include_router(websocket_routes.router, prefix="", tags=["WebSocket"])
 app.include_router(monitoring.router, prefix="/monitoring", tags=["Network Monitoring"])
 

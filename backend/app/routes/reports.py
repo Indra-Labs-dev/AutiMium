@@ -1,8 +1,9 @@
 """Reports API routes"""
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from app.models.database import get_report, get_all_reports, delete_report
+from app.services.export_service import ReportExporter
 import json
 import os
 
@@ -18,6 +19,41 @@ async def list_reports(limit: int = 50):
             "reports": reports,
             "count": len(reports)
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/export-all")
+async def export_all_reports(format: str = "csv"):
+    """Export all reports in CSV or HTML format"""
+    try:
+        reports = get_all_reports(1000)
+        
+        if format.lower() == "csv":
+            csv_content = ReportExporter.to_csv(reports)
+            
+            return Response(
+                content=csv_content,
+                media_type="text/csv",
+                headers={
+                    "Content-Disposition": "attachment; filename=all_reports.csv"
+                }
+            )
+        
+        elif format.lower() == "html":
+            html_content = ReportExporter.to_html(reports, title="AutoMium - All Reports")
+            
+            return Response(
+                content=html_content,
+                media_type="text/html",
+                headers={
+                    "Content-Disposition": "attachment; filename=all_reports.html"
+                }
+            )
+        
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported format: {format}")
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -46,7 +82,7 @@ async def remove_report(report_id: str):
 
 @router.post("/export/{report_id}")
 async def export_report(report_id: str, format: str = "json"):
-    """Export report in JSON or PDF format"""
+    """Export report in JSON, PDF, CSV, or HTML format"""
     report = get_report(report_id)
     
     if not report:
@@ -65,6 +101,30 @@ async def export_report(report_id: str, format: str = "json"):
             filepath,
             media_type='application/json',
             filename=filename
+        )
+    
+    elif format.lower() == "csv":
+        # Export to CSV
+        csv_content = ReportExporter.to_csv([report])
+        
+        return Response(
+            content=csv_content,
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename=report_{report_id}.csv"
+            }
+        )
+    
+    elif format.lower() == "html":
+        # Export to HTML (detailed terminal style)
+        html_content = ReportExporter.export_single_report_html(report)
+        
+        return Response(
+            content=html_content,
+            media_type="text/html",
+            headers={
+                "Content-Disposition": f"attachment; filename=report_{report_id}.html"
+            }
         )
     
     elif format.lower() == "pdf":
