@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/api_provider.dart';
 import 'kali_recon_screen.dart';
 import 'kali_scanning_screen.dart';
 import 'kali_exploitation_screen.dart';
@@ -8,7 +6,8 @@ import 'kali_malware_screen.dart';
 import 'kali_forensics_screen.dart';
 import 'kali_wireless_screen.dart';
 import 'kali_password_screen.dart';
-import 'kali_web_screen.dart';
+import 'kali_web_attacks_screen.dart';
+import 'kali_sniffing_screen.dart';
 
 class KaliToolsScreen extends StatefulWidget {
   const KaliToolsScreen({super.key});
@@ -28,7 +27,8 @@ class _KaliToolsScreenState extends State<KaliToolsScreen> {
     const KaliForensicsScreen(),
     const KaliWirelessScreen(),
     const KaliPasswordScreen(),
-    const KaliWebScreen(),
+    const KaliWebAttacksScreen(),
+    const KaliSniffingScreen(), // Bonus!
   ];
 
   @override
@@ -96,7 +96,11 @@ class _KaliToolsScreenState extends State<KaliToolsScreen> {
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.web),
-                  label: Text('Web'),
+                  label: Text('Web Attacks'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.network_check),
+                  label: Text('Sniffing'),
                 ),
               ],
             ),

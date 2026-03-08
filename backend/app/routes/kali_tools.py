@@ -62,8 +62,15 @@ class SQLiRequest(BaseModel):
     level: int = Field(default=1, description="Test level (1-5)")
     risk: int = Field(default=1, description="Risk level (1-3)")
     
+class WebAttackRequest(BaseModel):
+    target: str = Field(..., description="Target URL or IP")
+    tool: str = Field(default="sqlmap", description="Web attack tool: sqlmap, nikto, wpscan, dalfox")
+    options: Optional[Dict[str, Any]] = None
+
+
 class SniffingRequest(BaseModel):
     interface: str = Field(..., description="Network interface")
+    tool: str = Field(default="tcpdump", description="Sniffing tool: tcpdump, arpspoof, bettercap")
     filter: Optional[str] = None
     duration: int = Field(default=60, description="Capture duration in seconds")
 

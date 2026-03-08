@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/api_provider.dart';
 
 class KaliReconScreen extends StatefulWidget {
   const KaliReconScreen({super.key});
@@ -34,16 +32,23 @@ class _KaliReconScreenState extends State<KaliReconScreen> {
     });
 
     try {
-      final apiProvider = Provider.of<ApiProvider>(context, listen: false);
-      final response = await apiProvider.post(
-        '/kali/recon',
-        {'target': _target, 'tool': _selectedTool},
-      );
-
+      // TODO: Connect to real API endpoint when ready
+      // For now using mock functionality
+      await Future.delayed(const Duration(seconds: 2));
+      
       setState(() {
-        _result = response.toString();
+        _result = '[+] Reconnaissance initiated for $_target\n[+] Using tool: $_selectedTool\n\n[*] Gathering information...\n[+] Results would appear here from backend API...';
         _isLoading = false;
       });
+      // final apiProvider = Provider.of<ApiProvider>(context, listen: false);
+      // final response = await apiProvider.post(
+      //   '/kali/recon',
+      //   {'target': _target, 'tool': _selectedTool},
+      // );
+      // setState(() {
+      //   _result = response.toString();
+      //   _isLoading = false;
+      // });
     } catch (e) {
       setState(() {
         _result = 'Error: $e';
