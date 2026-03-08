@@ -1,0 +1,26 @@
+{
+  "name": "Full Network Assessment",
+  "description": "Complete network security assessment with multiple tools",
+  "steps": [
+    {
+      "command": "nmap -sS -sV -O 127.0.0.1",
+      "description": "SYN scan with version and OS detection",
+      "timeout": 300
+    },
+    {
+      "command": "nmap --script vuln 127.0.0.1",
+      "description": "Vulnerability scanning",
+      "timeout": 600
+    },
+    {
+      "command": "nikto -h http://127.0.0.1",
+      "description": "Web server scan",
+      "timeout": 300
+    },
+    {
+      "command": "hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://127.0.0.1",
+      "description": "SSH brute force test",
+      "timeout": 900
+    }
+  ]
+}

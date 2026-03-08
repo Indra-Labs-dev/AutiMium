@@ -79,7 +79,7 @@ class _TerminalWidgetState extends State<TerminalWidget> {
             color: const Color(0xFF0A0E27),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: const Color(0xFF0066FF).withOpacity(0.3),
+              color: const Color(0xFF0066FF).withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -96,7 +96,7 @@ class _TerminalWidgetState extends State<TerminalWidget> {
                   ),
                   border: Border(
                     bottom: BorderSide(
-                      color: const Color(0xFF0066FF).withOpacity(0.3),
+                      color: const Color(0xFF0066FF).withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -190,10 +190,10 @@ class _TerminalWidgetState extends State<TerminalWidget> {
                           fontSize: 14,
                           fontFamily: 'monospace',
                         ),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Enter command...',
                           hintStyle: TextStyle(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white,
                             fontFamily: 'monospace',
                           ),
                           border: InputBorder.none,

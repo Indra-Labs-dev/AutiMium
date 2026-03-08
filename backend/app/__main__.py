@@ -6,7 +6,7 @@ Modular architecture for cybersecurity tools orchestration
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import network, malware, bruteforce, reports, tools, websocket_routes, monitoring
+from app.routes import network, malware, bruteforce, reports, tools, websocket_routes, monitoring, auth
 from app.models.database import init_database
 from app.websocket.terminal import ConnectionManager
 
@@ -27,6 +27,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(network.router, prefix="/scan", tags=["Network Scanning"])
 app.include_router(malware.router, prefix="/analyze", tags=["Malware Analysis"])
 app.include_router(bruteforce.router, prefix="/bruteforce", tags=["Bruteforce"])

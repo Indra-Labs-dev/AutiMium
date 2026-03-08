@@ -187,9 +187,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                     decoration: BoxDecoration(
-                                      color: _getStatusColor(report['status']).withOpacity(0.2),
+                                      color: _getStatusColor(report['status']).withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(color: _getStatusColor(report['status'])),
                                     ),
@@ -232,14 +232,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.7,
           height: MediaQuery.of(context).size.height * 0.7,
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(_getTypeIcon(report['type']), color: Color(0xFFE94560)),
-                  SizedBox(width: 12),
+                  Icon(_getTypeIcon(report['type']), color: const Color(0xFFE94560)),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Report Details',
@@ -247,13 +247,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              Divider(),
-              SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
               
               _buildInfoRow('ID', report['id']),
               _buildInfoRow('Type', report['type']),
@@ -261,14 +261,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
               _buildInfoRow('Status', report['status']),
               _buildInfoRow('Date', DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.parse(report['created_at']))),
               
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Results:', style: Theme.of(context).textTheme.titleMedium),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(8),
@@ -294,11 +294,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 100, child: Text('$label:', style: TextStyle(fontWeight: FontWeight.bold))),
+          SizedBox(width: 100, child: Text('$label:', style: const TextStyle(fontWeight: FontWeight.bold))),
           Expanded(child: Text(value)),
         ],
       ),
@@ -320,9 +320,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
             onPressed: () async {
               final reportProvider = Provider.of<ReportProvider>(context, listen: false);
               await reportProvider.deleteReport(reportId);
-              if (mounted) Navigator.pop(context);
+              if (!context.mounted) return;
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Report deleted')),
+                const SnackBar(content: Text('Report deleted')),
               );
             },
             child: Text('Delete'),
